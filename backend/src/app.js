@@ -9,8 +9,7 @@ import messageRouter from "./route/message.route.js"
 app.use("/api/auth", authRouter)
 app.use("/api/messages", messageRouter)
 
-
-
+//this is the main file
 
 
 app.listen(PORT, ()=>{
