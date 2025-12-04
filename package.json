@@ -17,5 +17,8 @@
     "url": "https://github.com/Atharv12377/Converse/issues"
   },
   "homepage": "https://github.com/Atharv12377/Converse#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "validator": "^13.15.23"
+  }
 }

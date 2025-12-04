@@ -1,13 +1,23 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
+import cookieparser from "cookie-parser"
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 import authRouter from "./route/auth.route.js";
 import messageRouter from "./route/message.route.js";
+import { connectDB } from "./lib/db.js";
 
+
+
+
+
+
+
+app.use(express.json())
+app.use(cookieparser())
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
 
@@ -20,6 +30,11 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
+connectDB().then(()=>{
 app.listen(PORT, () => {
   console.log("The server is running on port " + PORT);
 });
+}).catch((err)=>{
+  console.log("Some shit happended and mongo db did not connect")
+})
+
