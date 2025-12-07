@@ -10,12 +10,6 @@ import authRouter from "./route/auth.route.js";
 import messageRouter from "./route/message.route.js";
 import { connectDB } from "./lib/db.js";
 
-
-
-
-
-
-
 app.use(express.json())
 app.use(cookieparser())
 app.use("/api/auth", authRouter);

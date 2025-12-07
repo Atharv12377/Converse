@@ -1,5 +1,9 @@
 import mongoose, { mongo } from "mongoose"
 import validator from "validator"
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+dotenv.config()
+const JWT_SECRET = process.env.JWT_SECRET
 
 const userSchema = new mongoose.Schema({
     fullname:{
@@ -66,6 +70,17 @@ const userSchema = new mongoose.Schema({
 },{
     timestamps: true
 })
+
+userSchema.methods.getJWT = function(){
+try{
+    const token = jwt.sign({userId: this._id}, JWT_SECRET, {expiresIn: "7d"})
+    return token
+}
+catch(err){
+    console.log(err)
+    throw new Error("Error Generating JWT")
+}
+}
 
 const Usermodel = mongoose.model("User", userSchema)
 export default Usermodel
