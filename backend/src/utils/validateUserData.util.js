@@ -3,8 +3,11 @@ import validator from "validator"
 
 
 const validateUserData = (userData) =>{
-const{fullname, email, password, age} = userData
-if(!fullname){
+const{firstName, lastName, email, password, age} = userData
+if(!firstName){
+    throw new Error("Please Enter Username");
+}
+if(!firstName){
     throw new Error("Please Enter Username");
 }
 if(!email){

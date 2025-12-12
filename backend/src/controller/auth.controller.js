@@ -5,12 +5,13 @@ dotenv.config();
 const FRONTEND_URL = process.env.FRONTEND_URL;
 import crypto from "crypto";
 import bcryptjs from "bcryptjs";
-import { sendWelcomeEmail } from "../emails/emailHandler.js";
 import validator from "validator";
+import sendEmail from "../emails/sendEmail.js";
+import { createVerificationEmailTemplate } from "../emails/emailTemplates.js";
 
 const signup = async (req, res) => {
   try {
-    const { fullname, email, password, age } = req.body;
+    const { firstName, lastName, email, password, age } = req.body;
     console.log(req.body);
     validateUserData(req.body);
     const isExisting = await User.findOne({ email: email });
@@ -32,7 +33,8 @@ const signup = async (req, res) => {
       .update(verificationID)
       .digest("hex"); //Im using sha256 hashing here and not bcrypt cuz bcrypt is so slow and not suitable for tokens, its used mainly for passwords.
     const user = new User({
-      fullname: fullname,
+      firstName: firstName,
+      lastName: lastName,
       email: email,
       password: hashedPassword,
       age: age,
@@ -43,20 +45,27 @@ const signup = async (req, res) => {
       //And i will do isVerified true later after email verification.
     });
     const verificationURL = `${FRONTEND_URL}/auth/verify?token=${verificationID}`; //I NEED TO CHANGE THIS WHILE BUILDing the frontend, VERYY IMPORTANT.
+    const emailHTML = createVerificationEmailTemplate(
+      user.firstName,
+      verificationURL
+    );
     const savedUser = await user.save();
     res.status(201).json({
       message: "User Created, Verify through Email to get started",
-      fullname: user.fullname,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       photourl: user.photoUrl,
       _id: user._id,
     });
+
     try {
-      sendWelcomeEmail(savedUser.email, savedUser.fullname, verificationURL);
-    } catch (err) {
-      res
-        .status(400)
-        .json({ message: "Failed to send verification mail", err });
+      await sendEmail(savedUser.email, "Verify Your Email Address", emailHTML);
+    } catch (emailErr) {
+      console.error("Failed to send verification email:", emailErr);
+      return res.status(500).json({
+        message: "User created, but failed to send verification email",
+      });
     }
   } catch (err) {
     console.log(err);
@@ -110,7 +119,7 @@ const verify = async (req, res) => {
   }
 };
 
-const login = async (req,res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -150,12 +159,13 @@ const login = async (req,res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true, //This will prevent XSS attacks -> Need to learn this
       sameSite: "strict", //CSRF attacks prevented
-      secure: process.env.NODE_ENV === "development" ? false : true,
+      // secure: process.env.NODE_ENV === "development" ? false : true,
     });
     res.json({
       message: "Login Successfull",
       data: {
-        fullname: user.fullname,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         authType: user.authType,
         isVerified: user.isVerified,
@@ -165,7 +175,7 @@ const login = async (req,res) => {
       },
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(400).json({
       message: "Error While logging in",
       error: err.message,

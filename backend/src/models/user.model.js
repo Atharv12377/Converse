@@ -6,7 +6,13 @@ dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET
 
 const userSchema = new mongoose.Schema({
-    fullname:{
+    firstName:{
+        type: String,
+        required: true, 
+        maxlength: 30, 
+        trim: true
+    },
+    lastName:{
         type: String,
         required: true, 
         maxlength: 30, 
