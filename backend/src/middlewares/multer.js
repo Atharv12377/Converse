@@ -1,6 +1,6 @@
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
-import cloudinary from "../lib/cloudinary";
+import cloudinary from "../lib/cloudinary.js";
 
 const storage = new CloudinaryStorage({
   cloudinary,
@@ -9,6 +9,6 @@ const storage = new CloudinaryStorage({
     allowed_formats: ["jpg", "png", "jpeg", "webp"],
   }, //This storage is the multer configuration
 });
-export const upload = multer({storage}) //We pass it here. and then use this upload as a middleware in routes. 
+export const upload = multer({ storage }); //We pass it here. and then use this upload as a middleware in routes.
 
-//FIle upload flow - configure cloudinary, then configure multer-storage-cloudinary. Then export this middleware and use it in the route. DONE. 
+//FIle upload flow - configure cloudinary, then configure multer-storage-cloudinary. Then export this middleware and use it in the route. DONE.

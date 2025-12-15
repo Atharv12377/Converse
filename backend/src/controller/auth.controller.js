@@ -182,7 +182,22 @@ const login = async (req, res) => {
     });
   }
 };
-export const logout = (req,res) => {
-  
-}
+export const logout = (req, res) => {
+  try { 
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error logging out",
+      error: error.message,
+    });
+  }
+};
+
 export { signup, verify, login };

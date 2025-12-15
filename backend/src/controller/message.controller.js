@@ -2,6 +2,7 @@ import { Message } from "../models/message.model.js";
 import { Conversation } from "../models/Conversation.model.js";
 import User from "../models/user.model.js";
 
+
 export const getAllChats = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
@@ -161,7 +162,11 @@ export const getMessages = async (req, res) => {
     }
     const messages = await Message.find({
       conversationId: conversationId,
-    }).sort({ createdAt: 1 });
+      createdAt: {$lt: cursor}
+    }).sort({ createdAt: -1 })
+
+
+
     if (messages.length === 0) {
       return res.status(200).json({ messages: [] });
     }
@@ -175,6 +180,7 @@ export const getMessages = async (req, res) => {
     });
   }
 };
+//I can add cursor Pagination here to get Messages. Bascially we would decide a cursor everytime we fetch suppose 20 msg, limit will be 20, and the new cursor would be from where the next 20 will start smth like that. 
 
 export const sendMessages = async (req, res) => {
   try {
