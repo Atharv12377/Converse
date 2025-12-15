@@ -182,5 +182,7 @@ const login = async (req, res) => {
     });
   }
 };
-
+export const logout = (req,res) => {
+  
+}
 export { signup, verify, login };
