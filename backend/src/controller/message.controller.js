@@ -162,7 +162,6 @@ export const getMessages = async (req, res) => {
     }
     const messages = await Message.find({
       conversationId: conversationId,
-      createdAt: {$lt: cursor}
     }).sort({ createdAt: -1 })
 
 
