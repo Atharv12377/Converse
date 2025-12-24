@@ -1,10 +1,13 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+
 
 function VerificationPage() {
-    const {verificationToken} = useParams();
-    console.log(verificationToken)
     
+    const [searchparams] = useSearchParams()
+    const token = searchparams.get('token')
+    console.log(token)
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">

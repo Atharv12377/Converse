@@ -44,7 +44,7 @@ const signup = async (req, res) => {
       //Here isVerified and Auth type will be by default false and password,
       //And i will do isVerified true later after email verification.
     });
-    const verificationURL = `${FRONTEND_URL}/auth/verify?token=${verificationID}`; //I NEED TO CHANGE THIS WHILE BUILDing the frontend, VERYY IMPORTANT.
+    const verificationURL = `${FRONTEND_URL}/verify?token=${verificationID}`; //I NEED TO CHANGE THIS WHILE BUILDing the frontend, VERYY IMPORTANT.
     const emailHTML = createVerificationEmailTemplate(
       user.firstName,
       verificationURL
