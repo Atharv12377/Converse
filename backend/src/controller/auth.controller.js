@@ -57,6 +57,7 @@ const signup = async (req, res) => {
       email: user.email,
       photourl: user.photoUrl,
       _id: user._id,
+      verificationToken: verificationID
     });
 
     try {
@@ -163,7 +164,7 @@ const login = async (req, res) => {
     });
     res.json({
       message: "Login Successfull",
-      data: {
+      user: {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,

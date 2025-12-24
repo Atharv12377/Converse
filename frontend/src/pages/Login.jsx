@@ -8,12 +8,12 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-white to-blue-200 flex items-center justify-center">
-      <div className="w-1/3 bg-indigo-800 h-screen flex flex-col items-center justify-center text-center rounded-tr-full">
+      <div className="w-1/3 bg-indigo-800 shadow-2xl/45 h-screen flex flex-col items-center justify-center text-center rounded-tr-full">
        <p className="text-2xl font-Cabin font-bold text-white ">
           Please Login To Continue
         </p>
       </div>
-        <div className="w-2/3 bg-red-500 rounded-bl-full h-screen flex flex-col justify-center items-center">
+        <div className="w-2/3 bg-red-500 rounded-bl-full shadow-2xl/45 h-screen flex flex-col justify-center items-center">
           <span className="text-3xl text-white font-Cause font-extrabold mb-4">
             LogIn
           </span>
@@ -46,7 +46,7 @@ const Login = () => {
             </div>
 
             <button className="h-14 w-full text-lg p-2 rounded-3xl bg-gray-300  hover:bg-gray-600 transition-colors duration-150">
-              Create Account
+              Log In
             </button>
             <p>
               New Here? <Link to={"/signup"}>Create An Account</Link>

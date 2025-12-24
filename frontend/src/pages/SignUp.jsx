@@ -1,23 +1,57 @@
-import {useState } from "react";
-import {Link} from 'react-router-dom'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+
 
 const SignUp = () => {
+  
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [age, setAge] = useState(0);
-  const [showPassword, setShowPassword] = useState("")    
+  const [showPassword, setShowPassword] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const HandleSignUp = async () => {
+    try {
+      const res = await axios.post(BACKEND_URL + "/auth/signup", {
+        firstName,
+        lastName,
+        email,
+        password,
+        age,
+      });
+      console.log(res.data);
+      if(res.status == 201){
+        setSuccess(true)
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  if(success){
+    return(
+      <div className="flex h-screen justify-center items-center">
+        <div className="font-serif text-6xl ">
+          Please Verify Your Email To Log In
+        </div>
+      </div>
+      
+    )
+  }
 
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-white to-blue-200  flex items-center justify-center ">
-      <div className="w-1/3 bg-red-500 h-screen flex flex-col items-center justify-center text-center rounded-tr-full">
+      <div className="w-1/3 bg-red-500 h-screen shadow-2xl/45 flex flex-col items-center justify-center text-center rounded-tr-full">
         <p className="text-6xl font-Cabin font-bold text-white">WELCOME,</p>
         <p className="text-2xl font-Cabin font-bold text-white">
           Please Create Your Account To Get Started
         </p>
       </div>
-      <div className="w-2/3 bg-indigo-800 rounded-bl-full h-screen flex flex-col justify-center items-center">
+      <div className="w-2/3 bg-indigo-800 shadow-2xl/45 rounded-bl-full h-screen flex flex-col justify-center items-center">
         <span className="text-3xl text-white font-Cause font-extrabold mb-4">
           SignUp
         </span>
@@ -79,14 +113,21 @@ const SignUp = () => {
             value={age}
             className="w-full h-10 p-3 rounded-2xl border-2 border-gray-300 text-lg m-3"
             onChange={(e) => {
-              setAge(e.target.value);
+              setAge(Number(e.target.value));
             }}
           />
 
-          <button className="h-14 w-full text-lg p-2 rounded-3xl bg-gray-300  hover:bg-gray-600 transition-colors duration-150">
+          <button
+            className="h-14 w-full text-lg p-2 rounded-3xl bg-gray-300  hover:bg-gray-600 transition-colors duration-150"
+            onClick={() => {
+              HandleSignUp();
+            }}
+          >
             Create Account
           </button>
-          <p>Already Have an Account? <Link to={"/login"}>Login</Link></p>
+          <p>
+            Already Have an Account? <Link to={"/login"}>Login</Link>
+          </p>
         </div>
       </div>
     </div>

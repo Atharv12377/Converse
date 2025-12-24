@@ -5,13 +5,14 @@ import ChatPage from './pages/ChatPage'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import { ChatLayout } from './pages/ChatLayout'
+import VerificationPage from './pages/VerificationPage'
 function App() {
 
   return (
     <Routes>
       <Route path='/login' element = {<Login/>}/>
       <Route path='/signup' element = {<SignUp/>}/>
-
+      <Route path='/verify/:verificationToken' element={<VerificationPage/>}/>
       <Route path='/' element = {
 
 

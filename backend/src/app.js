@@ -9,7 +9,9 @@ const __dirname = path.resolve();
 import authRouter from "./route/auth.route.js";
 import messageRouter from "./route/message.route.js";
 import { connectDB } from "./lib/db.js";
+import cors from "cors"
 
+app.use(cors())
 app.use(express.json())
 app.use(cookieparser())
 app.use("/api/auth", authRouter);
