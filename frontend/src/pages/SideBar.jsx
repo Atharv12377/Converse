@@ -2,7 +2,14 @@ import React from 'react'
 
 function SideBar() {
   return (
-    <div>SideBar</div>
+    <div className='min-h-screen w-full bg-red-50'>
+      <div>
+        //Search 
+      </div>
+      <div>
+        List
+      </div>
+    </div>
   )
 }
 

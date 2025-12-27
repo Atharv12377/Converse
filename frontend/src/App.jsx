@@ -6,10 +6,13 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import { ChatLayout } from './pages/ChatLayout'
 import VerificationPage from './pages/VerificationPage'
-function App() {
+import Error from './pages/Error'
 
+function App() {
+  
   return (
     <Routes>
+      <Route path='/error' element={<Error/>}></Route>
       <Route path='/login' element = {<Login/>}/>
       <Route path='/signup' element = {<SignUp/>}/>
       <Route path='/verify' element={<VerificationPage/>}/>

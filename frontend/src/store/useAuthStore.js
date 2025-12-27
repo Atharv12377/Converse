@@ -1,7 +1,8 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 const useAuthStore = create(
-  devtools((set) => ({
+  devtools(
+  persist((set) => ({
     user: null,
     token: null,
     isAuthenticated: false,
@@ -13,7 +14,7 @@ const useAuthStore = create(
         isAuthenticated: true,
       },
       false,
-      "auth/signup"
+      "auth/login"
     ),
 
     logout: () =>
@@ -24,6 +25,6 @@ const useAuthStore = create(
       }),
   })),
   { name: "AuthStore" }
-);
+));
 
 export default useAuthStore;

@@ -1,59 +1,107 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios"
+import useAuthStore from "../store/useAuthStore.js"
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  const login = useAuthStore((state)=> state.login)
+  const[error, setError] = useState("")
+  const navigate = useNavigate();
 
+  const handleLogin = async() =>{
+    try {
+        const res = await axios.post(`${BACKEND_URL}/auth/login`, {
+      email,
+      password
+    }, {withCredentials: true})
+    setError("")
+    console.log(res);
+    console.log(res.data)
+    login({
+      user: res.data.user,
+      token: res.data.token
+    })
+    if(res.status === 200) {
+      navigate("/")
+    }
+    } catch (error) {
+      setError(error.response.data.message) 
+      console.log(error)
+    }
+
+  }
+ 
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-white to-blue-200 flex items-center justify-center">
-      <div className="w-1/3 bg-indigo-800 shadow-2xl/45 h-screen flex flex-col items-center justify-center text-center rounded-tr-full">
-       <p className="text-2xl font-Cabin font-bold text-white ">
-          Please Login To Continue
+      
+      <div className="hidden md:flex md:w-1/3 h-screen bg-red-500 shadow-2xl flex flex-col items-center justify-center text-center rounded-tr-full px-6">
+        <p className="text-2xl lg:text-3xl font-Cabin font-bold text-white">
+          Please login to continue
         </p>
       </div>
-        <div className="w-2/3 bg-red-500 rounded-bl-full shadow-2xl/45 h-screen flex flex-col justify-center items-center">
-          <span className="text-3xl text-white font-Cause font-extrabold mb-4">
-            LogIn
-          </span>
-          <div className="w-full max-w-lg border-2 bg-white border-gray-500 rounded-2xl flex flex-col items-center p-3 ml-10">
+
+      <div className="w-full md:w-2/3 h-screen  bg-indigo-800  shadow-2xl rounded-none md:rounded-bl-full flex flex-col justify-center items-center px-4">
+        
+        <span className="text-3xl text-white font-Cause font-extrabold mb-6">
+          Log In
+        </span>
+
+        <div className="w-full max-w-md bg-white/90 backdrop-blur-md border border-gray-300 rounded-2xl p-6 space-y-4">
+          
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            className="w-full h-11 px-4 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <div className="relative">
             <input
-              type="email"
-              value={email}
-              placeholder="Enter Your Email"
-              className="w-full h-10 p-3 rounded-2xl border-2 border-gray-300 text-lg m-3"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              className="w-full h-11 px-4 pr-14 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
+              onChange={(e) => setPassword(e.target.value)}
             />
 
-            <div className="w-full flex justify-between relative m-3 ">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                placeholder="Enter Your Password"
-                className="w-full h-10 p-3 pr-12 rounded-2xl border-2 border-gray-300 text-lg"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-800"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-
-            <button className="h-14 w-full text-lg p-2 rounded-3xl bg-gray-300  hover:bg-gray-600 transition-colors duration-150">
-              Log In
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-800"
+            >
+              {showPassword ? "Hide" : "Show"}
             </button>
-            <p>
-              New Here? <Link to={"/signup"}>Create An Account</Link>
-            </p>
           </div>
+
+          <button
+            className="h-12 w-full rounded-xl bg-indigo-800 text-white font-semibold hover:bg-red-700 transition-all duration-200"
+            onClick={()=>{
+              handleLogin();
+            }}
+          >
+            Log In
+          </button>
+
+          <p className="text-sm text-center text-gray-600">
+            New here?{" "}
+            <Link
+              to="/signup"
+              className="text-indigo-800 font-semibold hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
+          <p className="text-sm text-center text-red-500">{error}</p>
         </div>
+      </div>
     </div>
   );
 };
+
 export default Login;

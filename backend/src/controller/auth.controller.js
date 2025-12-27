@@ -140,7 +140,7 @@ const login = async (req, res) => {
         message: "User not found",
       });
     }
-    console.log(user.password);
+   // console.log(user.password);
     const isValidPassword = await bcryptjs.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(400).json({
