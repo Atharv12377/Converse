@@ -1,13 +1,25 @@
 import React, { useState } from "react";
-import Dummyimage from "../assets/ConverseLogo1.PNG";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import useAuthStore from "../store/useAuthStore";
+import DefaultLogo from "../assets/DefaultLogo.jpg"
 function DropdownMenu() {
+    const user = useAuthStore((state)=> state.user)
   const [showDropdown, setShowDropDown] = useState(false);
+  const navigate = useNavigate()
+  console.log(user.photoUrl)
+  const handleLogOut = async() =>{
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+    const res = await axios.get(`${BACKEND_URL}/auth/logout`, {withCredentials:true})
+    console.log(res)
+    navigate("/login")
+  }
   return (
     <div className="w-15 bg-red-500 rounded-full h-15 relative">
       <div className="h-full w-full rounded-full ">
         <img
-          src={Dummyimage}
-          alt=""
+          src={user.photoUrl.length ===0 ?  DefaultLogo : user.photoUrl}
+          alt=""    
           className="rounded-full "
           onClick={() => {
             if (showDropdown === false) {
@@ -24,7 +36,9 @@ function DropdownMenu() {
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
               Profile
             </li>
-            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={()=>{
+                handleLogOut()
+            }}>
               Logout
             </li>
           </ul>

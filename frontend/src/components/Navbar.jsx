@@ -4,7 +4,7 @@ import DropdownMenu from './DropdownMenu';
 function Navbar() {
   
   return (
-    <div className='w-full h-full flex justify-between items-center'>
+    <div className='w-full h-full flex justify-between items-center p-3'>
       <div className='w-1/12 bg-transparent'>
         <img src= {logo} className='h-full w-full' />
       </div>

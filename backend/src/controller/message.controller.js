@@ -38,7 +38,7 @@ export const getAllChats = async (req, res) => {
 
 export const SearchPeople = async (req, res) => {
   try {
-    const { firstName, lastName } = req.query;
+    const { firstName, lastName } = req.body;
 
     if (!firstName && !lastName) {
       return res.status(400).json({
@@ -46,7 +46,7 @@ export const SearchPeople = async (req, res) => {
       });
     }
     const Users = await User.find({
-      $or: [{ firstName: firstName }, { lastName: lastName }],
+      $or: [{ firstName: firstName || firstName }, { lastName: lastName || firstName }],
     });
     if (Users.length === 0) {
       return res.status(404).json({

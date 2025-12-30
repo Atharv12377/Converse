@@ -50,7 +50,8 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl:{
         type: String,
-        trim: true
+        trim: true,
+        default: ""
     },
     password:{
         type: String,

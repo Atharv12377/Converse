@@ -170,6 +170,7 @@ const login = async (req, res) => {
         email: user.email,
         authType: user.authType,
         isVerified: user.isVerified,
+        photoUrl: user.photoUrl
       },
       token: {
         token,
