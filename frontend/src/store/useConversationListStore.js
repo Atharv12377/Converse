@@ -1,30 +1,46 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
+
 const useConversationListStore = create(
   devtools(
-  persist((set) => ({
-    conversationId: null,
-    token: null,
-    isAuthenticated: false,
+    persist(
+      (set) => ({
+        chats: [],
 
-    login: (data) =>
-      set({
-        user: data.user,
-        token: data.token,
-        isAuthenticated: true,
-      },
-      false,
-      "auth/login"
-    ),
+        setChats: (chats) =>
+          set(
+            { chats },
+            false,
+            "conversation/setChats"
+          ),
 
-    logout: () =>
-      set({
-        user: null,
-        token: null,
-        isAuthenticated: false,
+        updateChat: (updatedChat) =>
+          set(
+            (state) => {
+              const filteredChats = state.chats.filter(
+                (chat) => chat._id !== updatedChat._id
+              );
+
+              return {
+                chats: [updatedChat, ...filteredChats],
+              };
+            },
+            false,
+            "conversation/updateChat"
+          ),
+
+        clearChats: () =>
+          set(
+            { chats: [] },
+            false,
+            "conversation/clearChats"
+          ),
       }),
-  })),
-  { name: "AuthStore" }
-));
+      {
+        name: "conversation-list-store",
+      }
+    )
+  )
+);
 
-export default useAuthStore;
+export default useConversationListStore;

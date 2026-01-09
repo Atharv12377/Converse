@@ -2,7 +2,6 @@ import { Message } from "../models/message.model.js";
 import { Conversation } from "../models/Conversation.model.js";
 import User from "../models/user.model.js";
 
-
 export const getAllChats = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
@@ -46,7 +45,10 @@ export const SearchPeople = async (req, res) => {
       });
     }
     const Users = await User.find({
-      $or: [{ firstName: firstName || firstName }, { lastName: lastName || firstName }],
+      $or: [
+        { firstName: firstName || firstName },
+        { lastName: lastName || firstName },
+      ],
     });
     if (Users.length === 0) {
       return res.status(404).json({
@@ -92,43 +94,23 @@ export const createConversation = async (req, res) => {
         lastMessage: undefined,
       });
       const savedConversation = await newConversation.save();
-      return res.status(201).json({
-        Conversation: {
-          isNew: true,
-          ConversationId: savedConversation._id,
-          firstParticipant: {
-            firstParticipantUserId: req.user._id,
-            firstName: req.user.firstName,
-            lastName: req.user.lastName,
-            photoUrl: req.user.photoUrl || "",
-          },
-          secondParticipant: {
-            secondParticipantUserId: secondParticipantData._id,
-            firstName: secondParticipantData.firstName,
-            lastName: secondParticipantData.lastName,
-            photoUrl: secondParticipantData.photoUrl || "",
-          },
-        },
+      const populatedConversation = await Conversation.findById(
+        savedConversation._id
+      ).populate("participants", "firstName lastName photoUrl");
+
+      return res.status(201).json({ 
+        isNew: true,
+        conversation: populatedConversation,
       });
     } //Idhar first participant is the once which is logged in. Therefore req.user.__ since we attach the loggedin user's details to the req object in auth middleware.
     else {
+      const populatedConversation = await Conversation.findById(
+        isExistingConversation._id
+      ).populate("participants", "firstName lastName photoUrl");
+
       return res.status(200).json({
         isNew: false,
-        Conversation: {
-          ConversationId: isExistingConversation._id,
-          firstParticipant: {
-            firstParticipantUserId: req.user._id,
-            firstName: req.user.firstName,
-            lastName: req.user.lastName,
-            photoUrl: req.user.photoUrl || "",
-          },
-          secondParticipant: {
-            secondParticipantUserId: secondParticipantData._id,
-            firstName: secondParticipantData.firstName,
-            lastName: secondParticipantData.lastName,
-            photoUrl: secondParticipantData.photoUrl || "",
-          },
-        },
+        conversation: populatedConversation,
       });
     }
   } catch (error) {
@@ -162,9 +144,7 @@ export const getMessages = async (req, res) => {
     }
     const messages = await Message.find({
       conversationId: conversationId,
-    }).sort({ createdAt: -1 })
-
-
+    }).sort({ createdAt: -1 });
 
     if (messages.length === 0) {
       return res.status(200).json({ messages: [] });
@@ -179,51 +159,72 @@ export const getMessages = async (req, res) => {
     });
   }
 };
-//I can add cursor Pagination here to get Messages. Bascially we would decide a cursor everytime we fetch suppose 20 msg, limit will be 20, and the new cursor would be from where the next 20 will start smth like that. 
+//I can add cursor Pagination here to get Messages. Bascially we would decide a cursor everytime we fetch suppose 20 msg, limit will be 20, and the new cursor would be from where the next 20 will start smth like that.
 
 export const sendMessages = async (req, res) => {
   try {
-    const conversationId = req.params.conversationId;
+    const { conversationId } = req.params;
     const loggedInUserId = req.user._id;
+
     if (!conversationId || !loggedInUserId) {
       return res.status(400).json({
-        message: "Conversation Or User Not Found, Please try again.",
+        message: "Conversation Or User Not Found",
       });
     }
+
     const isValidConversation = await Conversation.findOne({
       _id: conversationId,
       participants: { $in: [loggedInUserId] },
     });
+
     if (!isValidConversation) {
       return res.status(403).json({
         message: "Access Denied",
       });
     }
-    const {textMessage} = req.body;
+
+    const { textMessage } = req.body;
+
     if (!textMessage && !req.file) {
       return res.status(400).json({
         message: "Enter a message",
       });
     }
-    const typeofmessage = req.file ? "image" : "text";
-    let imageUrl = req.file? req.file.path  : null; //Since we are using the multer-cloudinary-storage package, we dont need to upload the file using multer and then upload to cloudinary, it happens directly through that multer middleware. So the multer reads the file and uploads it to cloudinary directly, and doest store it in the local sys storage. No tension for temp file handeling. 
+
+    const type = req.file ? "image" : "text";
+    const imageUrl = req.file ? req.file.path : null;
+
     const message = new Message({
-      conversationId: conversationId,
+      conversationId,
       senderId: loggedInUserId,
-      type: typeofmessage,
+      type,
       message: textMessage,
       imageUrlCloudinary: imageUrl,
     });
-    const savedmessage = await message.save();
-    await Conversation.findByIdAndUpdate(conversationId, {
-      lastMessage: savedmessage._id,
-    });
+
+    const savedMessage = await message.save();
+
+    const updatedConversation = await Conversation.findByIdAndUpdate(
+      conversationId,
+      { lastMessage: savedMessage._id },
+      { new: true }
+    )
+      .populate({
+        path: "participants",
+        select: "_id firstName lastName photoUrl",
+      })
+      .populate({
+        path: "lastMessage",
+        select: "senderId type message imageUrlCloudinary",
+      });
+
     res.status(200).json({
-      message: savedmessage,
+      message: savedMessage,
+      updatedConversation,
     });
   } catch (error) {
-    return res.status(400).json({
-      message: "Something went Wrong while sending the message",
+    res.status(400).json({
+      message: "Something went wrong while sending the message",
       error: error.message,
     });
   }

@@ -4,13 +4,15 @@ import axios from "axios";
 import useAuthStore from "../store/useAuthStore";
 import DefaultLogo from "../assets/DefaultLogo.jpg"
 function DropdownMenu() {
+  const logout = useAuthStore((state) => state.logout)
     const user = useAuthStore((state)=> state.user)
   const [showDropdown, setShowDropDown] = useState(false);
   const navigate = useNavigate()
-  console.log(user.photoUrl)
+  
   const handleLogOut = async() =>{
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const res = await axios.get(`${BACKEND_URL}/auth/logout`, {withCredentials:true})
+    logout()
     console.log(res)
     navigate("/login")
   }
@@ -18,7 +20,7 @@ function DropdownMenu() {
     <div className="w-15 bg-red-500 rounded-full h-15 relative">
       <div className="h-full w-full rounded-full ">
         <img
-          src={user.photoUrl.length ===0 ?  DefaultLogo : user.photoUrl}
+          src={user?.photoUrl?.length ===0 ?  DefaultLogo : user?.photoUrl}
           alt=""    
           className="rounded-full "
           onClick={() => {
