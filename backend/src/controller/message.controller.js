@@ -15,7 +15,7 @@ export const getAllChats = async (req, res) => {
       .populate({ path: "lastMessage", select: "senderId type message" })
       .populate({
         path: "participants",
-        select: "_id firstName lastName photoUrl",
+        select: "_id firstName lastName photoUrl email",
       });
 
     if (chats.length === 0) {
@@ -98,7 +98,7 @@ export const createConversation = async (req, res) => {
         savedConversation._id
       ).populate("participants", "firstName lastName photoUrl");
 
-      return res.status(201).json({ 
+      return res.status(201).json({
         isNew: true,
         conversation: populatedConversation,
       });

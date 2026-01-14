@@ -9,7 +9,7 @@ const useConversationListStore = create(
 
         setChats: (chats) =>
           set(
-            { chats },
+            { chats: Array.isArray(chats) ? chats : [] },
             false,
             "conversation/setChats"
           ),

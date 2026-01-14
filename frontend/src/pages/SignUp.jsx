@@ -48,32 +48,32 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-white to-blue-200 flex items-center justify-center">
-      
-   
-      <div className="hidden md:flex md:w-1/3 h-screen bg-red-500 shadow-2xl flex-col items-center justify-center text-center rounded-tr-full px-6">
-        <p className="text-5xl lg:text-6xl font-Cabin font-bold text-white">
+
+
+      <div className="hidden md:flex md:w-1/3 h-screen bg-gradient-to-br from-red-500 to-red-600 shadow-2xl flex-col items-center justify-center text-center rounded-tr-full px-6">
+        <p className="text-5xl lg:text-6xl font-Cabin font-bold text-white drop-shadow-md">
           WELCOME,
         </p>
-        <p className="mt-2 text-xl lg:text-2xl font-Cabin font-semibold text-white">
+        <p className="mt-2 text-xl lg:text-2xl font-Cabin font-semibold text-white/90 drop-shadow-sm">
           Create your account to get started
         </p>
       </div>
 
-     
-      <div className="w-full md:w-2/3 h-screen bg-indigo-800 shadow-2xl rounded-none md:rounded-bl-full flex flex-col justify-center items-center px-4">
-        
-        <span className="text-3xl text-white font-Cause font-extrabold mb-6">
+
+      <div className="w-full md:w-2/3 h-screen bg-gradient-to-br from-indigo-700 to-indigo-900 shadow-2xl rounded-none md:rounded-bl-full flex flex-col justify-center items-center px-4">
+
+        <span className="text-3xl text-white font-Cause font-extrabold mb-6 drop-shadow-lg">
           Sign Up
         </span>
 
-       
-        <div className="w-full max-w-md bg-white/90 backdrop-blur-md border border-gray-300 rounded-2xl p-6 space-y-4">
-          
+
+        <div className="w-full max-w-md bg-white/95 backdrop-blur-lg border border-white/50 rounded-2xl p-6 space-y-4 shadow-xl">
+
           <input
             type="text"
             placeholder="First Name"
             value={firstName}
-            className="w-full h-11 px-4 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-full h-11 px-4 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200 hover:border-gray-400"
             onChange={(e) => setFirstName(e.target.value)}
           />
 
@@ -93,20 +93,20 @@ const SignUp = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          
+
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
-              className="w-full h-11 px-4 pr-14 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full h-11 px-4 pr-14 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all duration-200 hover:border-gray-400"
               onChange={(e) => setPassword(e.target.value)}
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-800"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-indigo-600 transition-colors duration-200"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
@@ -122,7 +122,7 @@ const SignUp = () => {
 
           <button
             onClick={HandleSignUp}
-            className="h-12 w-full rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-all duration-200"
+            className="h-12 w-full rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 hover:shadow-lg active:scale-[0.98] transition-all duration-200"
           >
             Create Account
           </button>
