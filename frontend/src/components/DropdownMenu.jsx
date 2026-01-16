@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../store/useAuthStore";
 import DefaultLogo from "../assets/DefaultLogo.jpg"
+import useConversationStore from "../store/useConversationStore";
+import useConversationListStore from "../store/useConversationListStore";
+
 function DropdownMenu() {
+  const clearChats = useConversationListStore((state) => state.clearChats)
+  const clearActiveConversation  = useConversationStore((state) => state.clearActiveConversation)
   const logout = useAuthStore((state) => state.logout)
     const user = useAuthStore((state)=> state.user)
   const [showDropdown, setShowDropDown] = useState(false);
@@ -13,6 +18,8 @@ function DropdownMenu() {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const res = await axios.get(`${BACKEND_URL}/auth/logout`, {withCredentials:true})
     logout()
+    clearChats()
+    clearActiveConversation()
     console.log(res)
     navigate("/login")
   }

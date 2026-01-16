@@ -1,24 +1,30 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 const useConversationStore = create(
-    devtools((set) => ({
-        activeConversation: null,
+    devtools(
+        persist(
+            (set) => ({
+                activeConversation: null,
 
-        setActiveConversation: (conversation) =>
-            set(
-                { activeConversation: conversation },
-                false,
-                "conversation/setActive"
-            ),
+                setActiveConversation: (conversation) =>
+                    set(
+                        { activeConversation: conversation },
+                        false,
+                        "conversation/setActive"
+                    ),
 
-        clearActiveConversation: () =>
-            set(
-                { activeConversation: null },
-                false,
-                "conversation/clearActive"
-            ),
-    }))
+                clearActiveConversation: () =>
+                    set(
+                        { activeConversation: null },
+                        false,
+                        "conversation/clearActive"
+                    ),
+
+            }
+            ), { name: "conversation-store" }
+        )
+    ),
 );
 
 export default useConversationStore;

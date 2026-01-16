@@ -96,7 +96,7 @@ export const createConversation = async (req, res) => {
       const savedConversation = await newConversation.save();
       const populatedConversation = await Conversation.findById(
         savedConversation._id
-      ).populate("participants", "firstName lastName photoUrl");
+      ).populate("participants", "firstName lastName email photoUrl");
 
       return res.status(201).json({
         isNew: true,
@@ -106,7 +106,7 @@ export const createConversation = async (req, res) => {
     else {
       const populatedConversation = await Conversation.findById(
         isExistingConversation._id
-      ).populate("participants", "firstName lastName photoUrl");
+      ).populate("participants", "firstName lastName email photoUrl");
 
       return res.status(200).json({
         isNew: false,

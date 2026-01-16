@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/useAuthStore";
 import useConversationStore from "../store/useConversationStore";
+import axios from "axios";
 
 function ListCard({ chats }) {
   const navigate = useNavigate();
@@ -9,15 +10,19 @@ function ListCard({ chats }) {
   const setActiveConversation = useConversationStore(
     (state) => state.setActiveConversation
   );
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const userId = user?.userId;
+  const participant = chats.participants.find((p) => p._id !== userId);
 
-  const myEmail = user?.email;
-  const participant = chats.participants.find((p) => p.email !== myEmail);
-
-  const handleClick = () => {
+  const handleClick = async () => {
+    const res = await axios.post(`${BACKEND_URL}/messages/createConversation`,
+      { secondParticipant: participant?._id },
+      { withCredentials: true });
+    console.log(res);
     // Save this conversation as active
-    setActiveConversation(chats);
+    setActiveConversation(res.data.conversation);
     // Navigate to the chat page
-    navigate(`/chat/${chats._id}`);
+    navigate(`/chat/${res.data.conversation._id}`);
   };
 
   return (

@@ -28,7 +28,7 @@ const ChatPage = () => {
             try {
                 setLoading(true);
                 const res = await axios.get(
-                    `${BACKEND_URL}/messages/${conversationId}`,
+                    `${BACKEND_URL}/messages/getMessages/${conversationId}`,
                     { withCredentials: true }
                 );
                 console.log(res.data)
@@ -43,7 +43,7 @@ const ChatPage = () => {
         if (conversationId) {
             fetchMessages();
         }
-    }, [conversationId, BACKEND_URL]);
+    }, [conversationId]);
 
     return (
         <div className="h-full w-full flex flex-col bg-white">
@@ -51,7 +51,7 @@ const ChatPage = () => {
             <div className="h-16 bg-gradient-to-r from-indigo-500 to-indigo-600 flex items-center px-4 shadow-sm">
                 <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
                     <p className="text-lg font-semibold text-white">
-                        {participant?.firstName?.[0] || "?"}
+                        {participant?.firstName?.[0] || null}
                     </p>
                 </div>
                 <p className="ml-3 text-lg font-semibold text-white">

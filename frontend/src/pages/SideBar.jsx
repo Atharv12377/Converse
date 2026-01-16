@@ -30,7 +30,7 @@ function SideBar() {
       <div className="h-full flex-1 mt-2 rounded-2xl bg-gradient-to-b from-indigo-100 to-indigo-200 p-3 overflow-y-auto space-y-2">
         {Chats?.length === 0 ? (<div className="h-full w-full flex justify-center items-center">
           <p className="text-gray-400 font-medium text-lg">
-            Start Chatting ✨
+            Start Chatting !
           </p>
         </div>) : (
           Chats?.map((c) => <ListCard key={c._id} chats={c} />)

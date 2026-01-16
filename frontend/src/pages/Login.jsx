@@ -21,7 +21,7 @@ const Login = () => {
       }, { withCredentials: true })
       setError("")
       console.log(res);
-      console.log(res.data)
+      console.log("This is user login data"+ res.data)
       login({
         user: res.data.user,
         token: res.data.token

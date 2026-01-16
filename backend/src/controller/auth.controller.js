@@ -152,6 +152,7 @@ const login = async (req, res) => {
         message: "Verify Your Email Address To Log In",
       });
     }
+    
     const token = user.getJWT();
     if (!token) {
       throw new Error("Error Generating JWT");
@@ -162,9 +163,11 @@ const login = async (req, res) => {
       sameSite: "strict", //CSRF attacks prevented
       // secure: process.env.NODE_ENV === "development" ? false : true,
     });
+    console.log(user._id)
     res.json({
       message: "Login Successfull",
       user: {
+        userId : user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
