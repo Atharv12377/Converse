@@ -15,3 +15,5 @@ const useMessageStore = create(
     )
 )
 export default useMessageStore;
+//THis messaeg store is dn. Now -
+//1) Create a messagebox component. Call the send message api in the Chat page component.

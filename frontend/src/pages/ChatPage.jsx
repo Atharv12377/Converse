@@ -45,6 +45,13 @@ const ChatPage = () => {
         }
     }, [conversationId]);
 
+    const handleSendMessage = async () =>{
+        try {
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <div className="h-full w-full flex flex-col bg-white">
             {/* Header - Shows participant name */}
@@ -92,6 +99,7 @@ const ChatPage = () => {
 
             {/* Message Input - Placeholder for now */}
             <div className="h-16 bg-white border-t border-gray-100 flex items-center px-4 gap-3">
+                <button className="text-2xl h-10  hover:h-12  transition-all "> + </button>
                 <input
                     type="text"
                     placeholder="Type a message..."

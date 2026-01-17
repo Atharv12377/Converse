@@ -1,5 +1,5 @@
 import { Message } from "../models/message.model.js";
-import { Conversation } from "../models/Conversation.model.js";
+import { Conversation } from "../models/conversation.model.js";
 import User from "../models/user.model.js";
 
 export const getAllChats = async (req, res) => {
@@ -215,7 +215,10 @@ export const sendMessages = async (req, res) => {
       })
       .populate({
         path: "lastMessage",
-        select: "senderId type message imageUrlCloudinary",
+        populate: {
+          path: "senderId",
+          select: "_id firstName lastName photoUrl",
+        },
       });
 
     res.status(200).json({
