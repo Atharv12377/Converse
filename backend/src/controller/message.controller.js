@@ -144,7 +144,7 @@ export const getMessages = async (req, res) => {
     }
     const messages = await Message.find({
       conversationId: conversationId,
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: 1 });
 
     if (messages.length === 0) {
       return res.status(200).json({ messages: [] });
