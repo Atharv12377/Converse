@@ -1,5 +1,5 @@
 import React from 'react'
-import MessageBox from './messagebox'
+import MessageBox from './MessageBox'
 
 const MessageList = ({ messages, loading }) => {
   return (
