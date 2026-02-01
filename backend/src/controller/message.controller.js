@@ -124,7 +124,7 @@ export const createConversation = async (req, res) => {
     res.status(500).json({
       message: "Error while Creating Conversation",
       Error: error.message,
-    });
+    }); 
   }
 };
 
@@ -182,7 +182,8 @@ export const sendMessages = async (req, res) => {
         message: "Access Denied",
       });
     }
-
+    console.log(req.file)
+    console.log(req.body)
     const { textMessage } = req.body;
 
     if (!textMessage && !req.file) {
@@ -190,7 +191,7 @@ export const sendMessages = async (req, res) => {
         message: "Enter a message",
       });
     }
-
+    
     const type = req.file ? "image" : "text";
     const imageUrl = req.file ? req.file.path : null;
 

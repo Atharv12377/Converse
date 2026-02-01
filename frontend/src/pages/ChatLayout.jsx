@@ -2,8 +2,22 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import SideBar from "./SideBar";
 import Navbar from "../components/Navbar";
+import { useEffect } from "react";
+import socket, { connectSocket, disconnectSocket } from "../socket";
+import useAuthStore from "../store/useAuthStore";
 
 export const ChatLayout = () => {
+  const user = useAuthStore((state) => state.user);
+  const userId = user.userId
+  useEffect(() =>{
+    if(userId){
+      connectSocket(user?.userId);
+    }
+    console.log("Socket Connection Made");
+    return () => {
+      disconnectSocket()
+    }
+    }, [user])
   return (
     <div className="h-screen w-full min-w-md bg-gray-50 flex flex-col">
       <div className="h-20 bg-gradient-to-r from-indigo-500 to-indigo-600 p-3 flex justify-center items-center shadow-md">

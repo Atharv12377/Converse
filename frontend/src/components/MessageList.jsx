@@ -1,7 +1,15 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import MessageBox from './MessageBox'
 
 const MessageList = ({ messages, loading }) => {
+  // Ref for scrolling to bottom
+  const bottomRef = useRef(null);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   return (
     <div className=' flex-1 overflow-y-auto '>
       <div className="h-full w-full p-4 bg-gray-50">
@@ -17,17 +25,9 @@ const MessageList = ({ messages, loading }) => {
           <div className="flex flex-col gap-3">
             {messages.map((msg) => (
               <MessageBox key={msg._id} msg={msg} />
-              //   <div
-              //     key={msg._id}
-              //     className={`max-w-[70%] p-3 rounded-xl ${
-              //       msg.senderId === user?._id
-              //         ? "self-end bg-indigo-500 text-white"
-              //         : "self-start bg-white shadow-sm"
-              //     }`}
-              //   >
-              //     <p>{msg.message}</p>
-              //   </div>
             ))}
+            {/* Invisible element to scroll to */}
+            <div ref={bottomRef} />
           </div>
         )}
       </div>
