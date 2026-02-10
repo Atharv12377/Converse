@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-
+import axios from "axios"
 import useConversationStore from "../store/useConversationStore";
 import useAuthStore from "../store/useAuthStore";
 import useMessageStore from "../store/useMessagesStore";
 import MessageList from "../components/MessageList";
-import  { getSocket } from "../socket";
+import { getSocket } from "../socket";
 import Preview from "../components/Preview";
 
 
@@ -22,7 +22,8 @@ const ChatPage = () => {
     (state) => state.activeConversation
   );
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);  // For initial message fetch
+  const [sending, setSending] = useState(false);  // For sending message/image
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState("");
   const typingTimeoutRef = useRef(null);
@@ -88,35 +89,36 @@ const ChatPage = () => {
     }
   }, [BACKEND_URL, conversationId, setMessages]);
 
-  const handleFileChange = (e) =>{
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if(file){
+    if (file) {
       setSelectedFile(file);
       setPreview(URL.createObjectURL(file))
     }
   }
   const handleSendMessage = async () => {
-    const formdata = new FormData() //-> Form data contianer bana diya then -
-    if(message.trim()){
+    // Early return if nothing to send
+    if (!message.trim() && !selectedFile) return;
+
+    const formdata = new FormData()
+    if (message.trim()) {
       formdata.append("textMessage", message);
     }
-  
-    if(selectedFile){
+
+    if (selectedFile) {
       formdata.append("image", selectedFile)
     }
     try {
+      setSending(true);
       const res = await axios.post(
         `${BACKEND_URL}/messages/send/${conversationId}`,
-        
-          formdata
+        formdata
         ,
         { withCredentials: true }
       );
-      setSelectedFile(null)
-      setPreview(null)
+
       const savedMessage = res.data.message;
       console.log(savedMessage);
-
 
       const socket = getSocket();
       if (socket) {
@@ -128,12 +130,17 @@ const ChatPage = () => {
       setMessage("");
     } catch (error) {
       console.log(error);
+    } finally {
+      // Always reset these, whether success or error
+      setSending(false);
+      setSelectedFile(null);
+      setPreview(null);
     }
   };
 
 
 
-  
+
 
   return (
     <div className="h-full w-full flex flex-col bg-white">
@@ -150,18 +157,18 @@ const ChatPage = () => {
             ? `${participant.firstName} ${participant.lastName}`
             : "Select a chat"}
           <span className="text-sm">
-          {isTyping}
-        </span>
+            {isTyping}
+          </span>
         </p>
       </div>
       {
-        preview ? <Preview preview = {preview} setPreview = {setPreview} setSelectedFile = {setSelectedFile}/> : <MessageList messages={messages} loading={loading} />
+        preview ? <Preview preview={preview} setPreview={setPreview} setSelectedFile={setSelectedFile} sending={sending} /> : <MessageList messages={messages} loading={loading} />
       }
-  
+
       {/* Message Input - Placeholder for now */}
       <div className="h-16 bg-white border-t border-gray-100 flex items-center px-4 gap-3">
-        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" style={{display: "none"}} onChange={handleFileChange}/>
-        <button className="text-2xl h-10  hover:h-12  transition-all " onClick={()=> document.getElementById("imageInput").click()}>
+        <input type="file" id="imageInput" accept="image/jpeg, image/png, image/webp" style={{ display: "none" }} onChange={handleFileChange} />
+        <button className="text-2xl h-10  hover:h-12  transition-all " onClick={() => document.getElementById("imageInput").click()}>
           {" "}
           +{" "}
         </button>
@@ -197,11 +204,13 @@ const ChatPage = () => {
             }, 2000);
           }}
         />
-        
+
         <button
           className="h-10 px-6 bg-indigo-500 text-white rounded-full font-medium hover:bg-indigo-600 transition-colors"
           onClick={() => {
-            handleSendMessage();
+            if (message.length != 0) {
+              handleSendMessage();
+            }
           }}
         >
           Send

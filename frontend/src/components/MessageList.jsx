@@ -5,10 +5,10 @@ const MessageList = ({ messages, loading }) => {
   // Ref for scrolling to bottom
   const bottomRef = useRef(null);
 
-  // Scroll to bottom when messages change
+  // Scroll to bottom only when a new message is added (not on every render)
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages.length]);  // Only trigger when count changes
 
   return (
     <div className=' flex-1 overflow-y-auto '>

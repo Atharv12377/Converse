@@ -233,3 +233,23 @@ export const sendMessages = async (req, res) => {
     });
   }
 };
+
+export const deleteMessage = async(req,res) =>{
+  try {
+     const {messageId} = req.body
+  const unwantedMessage = Message.findById(messageId);
+  if(unwantedMessage){
+     await Message.findByIdAndDelete(messageId) 
+  }
+  res.json({
+    message: "Message deleted Successfully"
+  })
+  } catch (error) {
+    res.status(400).json({
+      message: "Message not deleted",
+      error: error
+    })
+  }
+ 
+ 
+}

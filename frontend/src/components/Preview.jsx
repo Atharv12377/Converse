@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Preview = ({ preview, setPreview, setSelectedFile }) => {
+const Preview = ({ preview, setPreview, setSelectedFile, sending }) => {
     return (
         <div className='flex flex-col flex-1 bg-gray-50'>
 
@@ -17,7 +17,14 @@ const Preview = ({ preview, setPreview, setSelectedFile }) => {
                 </button>
             </div>
 
-            <div className='flex-1 flex items-center justify-center p-2 sm:p-4'>
+            <div className='flex-1 flex items-center justify-center p-2 sm:p-4 relative'>
+                {sending ? (
+                    <div className='absolute inset-0 flex items-center justify-center bg-black/50'>
+                        <p className='z-10 text-lg text-white font-medium'>Sending ...</p>
+                    </div>
+
+                ) : (null)
+                }
                 <img
                     src={preview}
                     alt="preview"
