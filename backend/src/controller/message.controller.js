@@ -45,9 +45,11 @@ export const SearchPeople = async (req, res) => {
       });
     }
     const Users = await User.find({
+      // Exclude the logged in user from results
+      _id: { $ne: req.user._id },
       $or: [
         { firstName: firstName || firstName },
-        { lastName: lastName || firstName },
+        { lastName: lastName || lastName },  // was using firstName here by mistake
       ],
     });
     if (Users.length === 0) {
@@ -236,20 +238,26 @@ export const sendMessages = async (req, res) => {
 
 export const deleteMessage = async(req,res) =>{
   try {
-     const {messageId} = req.body
-  const unwantedMessage = Message.findById(messageId);
-  if(unwantedMessage){
-     await Message.findByIdAndDelete(messageId) 
-  }
-  res.json({
-    message: "Message deleted Successfully"
-  })
+    const {messageId} = req.body
+
+    // await was missing here — without it, findById returns a Promise (always truthy), so the check always passed
+    const unwantedMessage = await Message.findById(messageId);
+
+    if(!unwantedMessage){
+      return res.status(404).json({
+        message: "Message not found"
+      })
+    }
+
+    await Message.findByIdAndDelete(messageId)
+
+    res.json({
+      message: "Message deleted Successfully"
+    })
   } catch (error) {
     res.status(400).json({
       message: "Message not deleted",
       error: error
     })
   }
- 
- 
 }

@@ -159,9 +159,9 @@ const login = async (req, res) => {
     }
     res.cookie("jwt", token, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      httpOnly: true, //This will prevent XSS attacks -> Need to learn this
-      sameSite: "strict", //CSRF attacks prevented
-      // secure: process.env.NODE_ENV === "development" ? false : true,
+      httpOnly: true,   // prevents XSS
+      secure: process.env.NODE_ENV === "production",    // true on HTTPS (production), false on localhost
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",  // "none" needed for cross-origin (Vercel + Render)
     });
     console.log(user._id)
     res.json({
@@ -191,7 +191,8 @@ export const logout = (req, res) => {
   try { 
     res.clearCookie("jwt", {
       httpOnly: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
     res.status(200).json({

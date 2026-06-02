@@ -120,6 +120,9 @@ const ChatPage = () => {
       const savedMessage = res.data.message;
       console.log(savedMessage);
 
+      // Add the message to the local store immediately so the sender sees it right away
+      addMessage(savedMessage);
+
       const socket = getSocket();
       if (socket) {
         socket.emit("sendMessage", {
@@ -208,7 +211,8 @@ const ChatPage = () => {
         <button
           className="h-10 px-6 bg-indigo-500 text-white rounded-full font-medium hover:bg-indigo-600 transition-colors"
           onClick={() => {
-            if (message.length != 0) {
+            // Allow sending if there's a text message OR a selected image
+            if (message.trim().length !== 0 || selectedFile) {
               handleSendMessage();
             }
           }}

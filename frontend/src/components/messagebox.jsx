@@ -16,7 +16,15 @@ const MessageBox = ({ msg }) => {
         ? 'bg-indigo-500 text-white rounded-br-sm'
         : 'bg-gray-200 text-gray-800 rounded-bl-sm'
         }`}>
-        <p>{msg.message}</p>
+        {msg.type === "image" ? (
+          <img
+            src={msg.imageUrlCloudinary}
+            alt="sent image"
+            className="max-w-full rounded-lg"
+          />
+        ) : (
+          <p>{msg.message}</p>
+        )}
       </div>
     </div>
   );
