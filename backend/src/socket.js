@@ -34,7 +34,9 @@ export const initializeSocket = (server) => {
 
         socket.on("sendMessage", (data) => {
             const { conversationId, message } = data;
-            io.to(conversationId).emit("receiveMessage", message);
+            // socket.to() sends to everyone in the room EXCEPT the sender
+            // io.to() would include the sender too — causing duplicate messages
+            socket.to(conversationId).emit("receiveMessage", message);
             console.log(`Message Brodcasted to room ${conversationId}`)
         });
 
