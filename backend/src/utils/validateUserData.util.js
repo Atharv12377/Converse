@@ -17,7 +17,7 @@ if(!password){
     throw new Error("Please Enter Password");
 }
 if(validator.isStrongPassword(password) === false){
-    throw new Error("Please Enter Valid Password");
+    throw new Error("Password must be 8+ characters with uppercase, lowercase, a number, and a symbol (e.g. Hello@123)");
 }
 if(!age){
     throw new Error("Please Enter The Correct Age");
