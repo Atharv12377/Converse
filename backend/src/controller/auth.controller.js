@@ -16,8 +16,8 @@ const signup = async (req, res) => {
     validateUserData(req.body);
     const isExisting = await User.findOne({ email: email });
     if (isExisting) {
-      return res.status(200).json({
-        message: "User Already Exist",
+      return res.status(409).json({
+        message: "An account with this email already exists.",
       });
     }
     const salt = await bcryptjs.genSalt(10);
@@ -39,10 +39,9 @@ const signup = async (req, res) => {
       password: hashedPassword,
       age: age,
       accountType: accountType,
+      isVerified: true,  // auto-verified — email verification is optional
       verificationToken: hashedToken,
       verificationTokenExpiry: Date.now() + 1000 * 60 * 60,
-      //Here isVerified and Auth type will be by default false and password,
-      //And i will do isVerified true later after email verification.
     });
     const verificationURL = `${FRONTEND_URL}/verify?token=${verificationID}`; //I NEED TO CHANGE THIS WHILE BUILDing the frontend, VERYY IMPORTANT.
     const emailHTML = createVerificationEmailTemplate(
@@ -145,11 +144,7 @@ const login = async (req, res) => {
         message: "Incorrect Credentials",
       });
     }
-    if (user.isVerified === false) {
-      return res.status(400).json({
-        message: "Verify Your Email Address To Log In",
-      });
-    }
+    // Email verification is optional — users can log in immediately after signup
     
     const token = user.getJWT();
     if (!token) {
