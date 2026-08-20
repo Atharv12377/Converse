@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SignUp = () => {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -11,7 +12,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [age, setAge] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [toast, setToast] = useState("");
   const [error, setError] = useState("");
 
   const HandleSignUp = async () => {
@@ -26,7 +27,8 @@ const SignUp = () => {
       });
 
       if (res.status === 201) {
-        setSuccess(true);
+        setToast("✅ Account created! Redirecting to login...");
+        setTimeout(() => navigate("/login"), 2500);
       }
     } catch (error) {
       console.log(error);
@@ -37,23 +39,15 @@ const SignUp = () => {
     }
   };
 
-  if (success) {
-    return (
-      <div className="flex h-screen justify-center items-center bg-linear-to-b from-white to-blue-200">
-        <div className="text-center px-4">
-          <p className="text-3xl md:text-5xl font-serif font-semibold text-gray-800">
-            Please verify your email
-          </p>
-          <p className="mt-3 text-gray-600">
-            We’ve sent you a verification link.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-white to-blue-200 flex items-center justify-center">
+
+      {/* Toast notification */}
+      {toast && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg font-medium text-sm animate-bounce">
+          {toast}
+        </div>
+      )}
 
 
       <div className="hidden md:flex md:w-1/3 h-screen bg-gradient-to-br from-red-500 to-red-600 shadow-2xl flex-col items-center justify-center text-center rounded-tr-full px-6">
