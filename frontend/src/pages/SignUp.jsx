@@ -12,8 +12,10 @@ const SignUp = () => {
   const [age, setAge] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const HandleSignUp = async () => {
+    setError("");
     try {
       const res = await axios.post(`${BACKEND_URL}/auth/signup`, {
         firstName,
@@ -28,6 +30,10 @@ const SignUp = () => {
       }
     } catch (error) {
       console.log(error);
+      const msg = error?.response?.data?.Error?.message
+        || error?.response?.data?.message
+        || "Something went wrong. Please try again.";
+      setError(msg);
     }
   };
 
@@ -126,6 +132,10 @@ const SignUp = () => {
           >
             Create Account
           </button>
+
+          {error && (
+            <p className="text-sm text-center text-red-500 font-medium">{error}</p>
+          )}
 
           <p className="text-sm text-center text-gray-600">
             Already have an account?{" "}
