@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import MessageBox from './MessageBox'
+import MessageBox from './messagebox'
 
 const MessageList = ({ messages, loading }) => {
   // Ref for scrolling to bottom
