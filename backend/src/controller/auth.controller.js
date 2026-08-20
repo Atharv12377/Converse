@@ -71,9 +71,7 @@ const signup = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(400).json({
-      message: "Error While Signing Up",
-      place: "Check signup",
-      Error: err,
+      message: err.message || "Error While Signing Up",
     });
   }
 };
